@@ -7,8 +7,7 @@ import Netflix from "./pages/Neflix"
 import TvShow  from "./pages/TvShow"
 import Player from "./pages/Player"
 import MoviePage from "./pages/MoviePage"
-import BackGroundImage from './components/BackGroundImage';
-import Header from './components/Header';
+
 
 function App() {
   return (

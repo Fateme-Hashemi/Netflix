@@ -1,13 +1,29 @@
 import React, {useState} from 'react';
-import styled from "styled-components"
+import styled from "styled-components";
 import BackGroundImage from '../components/BackGroundImage';
 import Header from '../components/Header';
 
-
+import {firebaseAuth} from '../utlis/firebase-auth';
+import { createUserWithEmailAndPassword, onAuthStateChanged} from "firebase/auth";
+import { useNavigate } from 'react-router-dom';
 const SignUpPage = () => {
 
     const [showPassword, setShowpassword] = useState(false)
+    const [formValues, setFormValiues] = useState({email: "", password: ""})
+    const navigate = useNavigate()
+    const handleSingIn = async() => {
+        try {
+            const {email, password} = formValues;
+             await createUserWithEmailAndPassword(firebaseAuth, email, password);
+        }
+        catch (err) {
+            return err
+        }
+    }
 
+    onAuthStateChanged(firebaseAuth, (CurrentUser)=>{
+        if(CurrentUser) navigate("/")
+    }) 
     return (
       
             <Container>
@@ -29,10 +45,18 @@ const SignUpPage = () => {
 
                         {
                             showPassword ? (
-                                <input type='password' placeholder='password' name='password' />
+                                <input type='password' placeholder='password' name='password'
+                                value={formValues.password}
+                                onChange={(e)=> setFormValiues({
+                                    ...formValues, [e.target.name] : e.target.value
+                                })}
+                                 />
                             ) :
                             (
-                                <input type='email' placeholder='email address' name='email' />
+                                <input type='email' placeholder='email address' name='email'
+                                value={formValues.email}
+                                onChange={(e)=>setFormValiues({...formValues, [e.target.name]: e.target.value})}
+                                 />
                             )
                         }
                        
@@ -41,7 +65,7 @@ const SignUpPage = () => {
                             <button onClick={()=>setShowpassword(true)}>Get Started</button>
                         ) :
                         (
-                            <button>Sign up</button>
+                            <button onClick={handleSingIn}>Sign up</button>
                         )
                        }
                        
